@@ -1,10 +1,15 @@
 import { Router } from "express";
 import { blogRouter } from "../module/blog/blogRouer";
 import { userRouter } from "../module/user/userRouter";
+import { adminRouter } from "../module/admin/adminRouter";
 
 const router = Router()
 
     const blogWebsiteRouter = [
+        {
+            path:'/admin',
+            router:adminRouter,
+        },
         {
             path:'/blogs',
             router:blogRouter,

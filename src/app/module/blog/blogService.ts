@@ -26,10 +26,20 @@ const updateBlogService = async (id:string,payload:Partial<Tblog>)=>{
     return result
 }
 
+const deleteBlogService = async (id: string,) => {
+    const isBlogExist = await Blog.findById(id);
+
+    if (!isBlogExist) {
+        throw new App__error(httpStatus.NOT_FOUND, 'Blog not found. Please provide a valid Blog ID.');
+    }
+    await Blog.findByIdAndDelete(id);
+};
+
 
 
 export const blogService = {
     createBlogService,
     getAllBlogService,
-    updateBlogService
+    updateBlogService,
+    deleteBlogService
 }

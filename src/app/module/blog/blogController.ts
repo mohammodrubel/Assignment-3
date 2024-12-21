@@ -36,8 +36,21 @@ const updateBlogController = CatchAsync(async (req, res, next) => {
     })
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const deleteBlogController = CatchAsync(async(req,res,next)=>{
+    const id = req.params.id 
+    const result = await blogService.deleteBlogService(id)
+    sendResponce(res,{
+        statusCode:httpStatus.OK ,
+        success:true ,
+        message:"Blog deleted successfully",
+        data:result
+    })
+})
+
 export const blogController = {
     createBlogController,
     getAllBlogController,
-    updateBlogController
+    updateBlogController,
+    deleteBlogController
 }
