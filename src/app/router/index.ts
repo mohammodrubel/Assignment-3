@@ -6,7 +6,7 @@ const router = Router()
 
     const blogWebsiteRouter = [
         {
-            path:'/blog',
+            path:'/blogs',
             router:blogRouter,
         },
         {

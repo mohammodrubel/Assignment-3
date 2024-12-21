@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import { Tuser } from "./userInterface";
 import isEmail from "validator/lib/isEmail";
-
+import bcrypt from 'bcrypt'
 const userModelSchema = new Schema<Tuser>({
     name: {
         type: String,
@@ -21,10 +21,28 @@ const userModelSchema = new Schema<Tuser>({
         type: String,
         required: true,
         minlength: 6, 
-        maxlength: 20, 
+        maxlength: 20,
     },
+    isBlocked:{
+        type:Boolean,
+        default:false, 
+    },
+    role:{
+        type:String,
+        enum:['admin','user'],
+        default:'user',
+    }
 },{
     timestamps:true
 });
+
+
+    userModelSchema.pre('save',async function(){
+        const slatRound = 12 
+        const hashPassword = await bcrypt.hash(this.password,slatRound) 
+        this.password = hashPassword
+    })
+
+
 
 export const User = model<Tuser>('User', userModelSchema);
