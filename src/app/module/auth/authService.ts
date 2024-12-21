@@ -13,7 +13,7 @@ const loginService = async (payload: Tauth) => {
 
   // Check if the user exists
   if (!user) {
-    throw new App__error(httpStatus.UNAUTHORIZED, 'Invalid credentials.');
+    throw new App__error(httpStatus.UNAUTHORIZED, 'not found.');
   }
 
   // Check if the user account is blocked

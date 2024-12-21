@@ -15,7 +15,7 @@ const createBlogController = CatchAsync(async (req, res, next) => {
 })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getAllBlogController = CatchAsync(async (req, res, next) => {
-    const result = await blogService.getAllBlogService()
+    const result = await blogService.getAllBlogService(req.query)
     sendResponce(res, {
         statusCode: httpStatus.OK,
         success: true,

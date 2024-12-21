@@ -3,6 +3,7 @@ import App__error from "../../Error/App__Error";
 import { User } from "../user/userModel";
 import { Tblog } from "./blogInterface";
 import { Blog } from "./blogModel";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const createBlogService = async (payload:Tblog)=>{
     const isExistUser = await User.findById(payload.author)
@@ -13,8 +14,12 @@ const createBlogService = async (payload:Tblog)=>{
     return result
 }
 
-const getAllBlogService = async ()=>{
-    const result = await Blog.find({})
+const getAllBlogService = async (query:Record<string,unknown>)=>{
+    const allBlogs = new QueryBuilder(Blog.find().populate({
+        path:'author',select:'-password -isBlocked'
+    }),query).search(['title','content']).filter().sort().pagination().fields()
+    const result =await allBlogs.modelQuery
+
     return result
 }
 const updateBlogService = async (id:string,payload:Partial<Tblog>)=>{
