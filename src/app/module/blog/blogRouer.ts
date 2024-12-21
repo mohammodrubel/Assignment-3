@@ -8,7 +8,7 @@ import blogUpdateValidationSchema from "./blogUpdateValidation";
 
 const router = Router()
 
-router.post('/', auth(USER__ROLE.admin, USER__ROLE.user), DataValidation(blogSchema), blogController.createBlogController)
+router.post('/', DataValidation(blogSchema), blogController.createBlogController)
 router.get('/',blogController.getAllBlogController)
 router.patch('/:id', auth(USER__ROLE.user), DataValidation(blogUpdateValidationSchema), blogController.updateBlogController)
 router.delete('/:id',auth(USER__ROLE.user),blogController.deleteBlogController)

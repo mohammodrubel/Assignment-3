@@ -23,10 +23,10 @@ const getAllBlogService = async (query:Record<string,unknown>)=>{
     return result
 }
 const updateBlogService = async (id:string,payload:Partial<Tblog>)=>{
-    const isExistUser = await User.findById(payload.author)
-    if(!isExistUser){
-        throw new App__error(httpStatus.NOT_FOUND,'User not found. Please provide a valid user ID.')
-    }
+    // const isExistUser = await User.findById(payload.author)
+    // if(!isExistUser){
+    //     throw new App__error(httpStatus.NOT_FOUND,'User not found. Please provide a valid user ID.')
+    // }
     const result = await Blog.findByIdAndUpdate(id,payload,{new:true})
     return result
 }
