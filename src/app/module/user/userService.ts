@@ -19,6 +19,7 @@ const createUserService = async (payload: Tuser) => {
     const result = newUser.toObject();
     delete result.password;
     delete result.role;
+    delete result.isBlocked
 
     return result;
 };
