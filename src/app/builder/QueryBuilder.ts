@@ -1,71 +1,69 @@
-// 1 => Student.find er nam dilam QueryModel eita mongoose er query model 
-// 2 => query hocche express er amra ja kichu pathabo shob query akare ashbe 
-
-import { FilterQuery, Query } from "mongoose";
-
+import { FilterQuery, Query } from 'mongoose';
 
 class QueryBuilder<T> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public modelQuery: Query<T[], any>  //come for mongoose
-    public query: Record<string, unknown> //come for express 
+  public modelQuery: Query<T[], T>;
+  public query: Record<string, unknown>;
 
-    constructor(modelQuery: Query<T[], {}>, query: Record<string, unknown>) {
-        this.modelQuery = modelQuery;
-        this.query = query;
+  constructor(modelQuery: Query<T[], T>, query: Record<string, unknown>) {
+    this.modelQuery = modelQuery;
+    this.query = query;
+  }
+
+  search(searchableFields: string[]) {
+    const search = this?.query?.search;
+    if (search) {
+      const searchCondition = {
+        $or: searchableFields.map(
+          (field) =>
+            ({
+              [field]: { $regex: search, $options: 'i' },
+            }) as FilterQuery<T>,
+        ),
+      };
+
+      this.modelQuery = this.modelQuery.find(searchCondition);
     }
 
+    return this;
+  }
 
-    // search impliment 
-    search(searchableFields: string[]) {
-        const searchTerm = this?.query?.searchTerm
-        if (searchTerm) {
-            this.modelQuery = this?.modelQuery?.find({
-                $or: searchableFields.map((field) => ({ [field]: { $regex: searchTerm, $options: 'i' } }) as FilterQuery<T>)
-            })
-        }
-        return this
-    }
+  filter() {
+    const queryObj = { ...this.query };
 
-    // filter 
-    filter() {
-        const cloneQueryObject = { ...this.query }
-        // remove from query 
-        const removeQueryFields = ['searchTerm', 'sort', 'limit', 'page', 'fields']
-        removeQueryFields.forEach(el => delete cloneQueryObject[el])
-        this.modelQuery = this.modelQuery.find(cloneQueryObject as FilterQuery<T>)
+    const excludeFields = ['search', 'sort', 'limit', 'page', 'fields'];
 
-        return this
+    excludeFields.forEach((el) => delete queryObj[el]);
 
-    }
+    this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
-    // sort 
-    sort() {
-        const sort = this?.query?.sort || '-createdAt'
-        this.modelQuery = this.modelQuery.sort(sort as string)
-        return this
-    }
+    return this;
+  }
 
-    //paginateQuery 
-    pagination() {
-        const limit = Number(this.query.limit) || 10
-        let page = Number(this.query.page) || 1
-        const skip = (page - 1) * limit
-        this.modelQuery = this.modelQuery.skip(skip).limit(limit)
+  sort() {
+    const sort =
+      (this?.query?.sort as string)?.split(',')?.join(' ') || '-createdAt';
+    this.modelQuery = this.modelQuery.sort(sort as string);
 
-        return this
-    }
+    return this;
+  }
 
-    // fields 
-    fields (){
-        const fields =  (this?.query?.fields as string)?.split(',')?.join(' ') || '-__v'
-        this.modelQuery = this.modelQuery.select(fields)
-        return this 
-    }
+  paginate() {
+    const page = Number(this?.query?.page) || 1;
+    const limit = Number(this?.query?.limit) || 10;
+    const skip = (page - 1) * limit;
 
+    this.modelQuery = this.modelQuery.skip(skip).limit(limit);
 
+    return this;
+  }
 
+  fields() {
+    const fields =
+      (this?.query?.fields as string)?.split(',')?.join(' ') || '-__v';
 
+    this.modelQuery = this.modelQuery.select(fields);
+    return this;
+  }
 }
 
-
-export default QueryBuilder
+export default QueryBuilder;

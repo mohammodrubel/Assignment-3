@@ -17,7 +17,7 @@ const createBlogService = async (payload:Tblog)=>{
 const getAllBlogService = async (query:Record<string,unknown>)=>{
     const allBlogs = new QueryBuilder(Blog.find().populate({
         path:'author',select:'-password -isBlocked'
-    }),query).search(['title','content']).filter().sort().pagination().fields()
+    }),query).search(['title','content']).filter().sort().paginate().fields()
     const result =await allBlogs.modelQuery
 
     return result
