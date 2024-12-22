@@ -11,7 +11,7 @@ The application includes secure authentication, role-based authorization, and a 
 ---
 
 ## Live Demo
-- **Live Link**: [Blog Project](https://blog-project3-n7gwttrhs-mohammodrubels-projects.vercel.app)
+- **Live Link**: [Blog Project](https://blog-application-rouge.vercel.app/)
 
 ## Video Demonstration
 - **Video Link**: [Demonstration Video](https://drive.google.com/drive/folders/1yVb4AylFPSr_slSrWGKpeC5VMW1Yev7n?usp=sharing)
