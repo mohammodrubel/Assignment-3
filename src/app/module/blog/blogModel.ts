@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 import { Tblog } from "./blogInterface";
 
+
 const blogSchema = new Schema<Tblog>({
     author: {
         type: Schema.Types.ObjectId,
@@ -14,8 +15,15 @@ const blogSchema = new Schema<Tblog>({
     content: {
         type: String,
         required: true,
+    },
+    isPublished:{
+        type:Boolean,
+        required:true ,
+        default:false
     }
 
+},{
+    timestamps:true
 })
 
 
