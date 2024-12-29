@@ -5,30 +5,29 @@ import { Tblog } from "./blogInterface";
 import { Blog } from "./blogModel";
 import QueryBuilder from "../../builder/QueryBuilder";
 
-const createBlogService = async (payload:Tblog)=>{
-    const isExistUser = await User.findById(payload.author)
+const createBlogService = async (payload:Tblog,authorId:string)=>{
+    console.log("authorId",authorId)
+    const isExistUser = await User.findById(authorId)
         if(!isExistUser){
             throw new App__error(httpStatus.NOT_FOUND,'User not found. Please provide a valid user ID.')
         }
-    const result = await Blog.create(payload)
+    const result = await Blog.create({...payload,author:authorId})
     return result
 }
 
 const getAllBlogService = async (query:Record<string,unknown>)=>{
     const allBlogs = new QueryBuilder(Blog.find().populate({
-        path:'author',select:'-password -isBlocked'
+        path:'author',select:'-password -isBlocked -role'
     }),query).search(['title','content']).filter().sort().paginate().fields()
     const result =await allBlogs.modelQuery
 
     return result
 }
-const updateBlogService = async (id:string,payload:Partial<Tblog>)=>{
-    // const isExistUser = await User.findById(payload.author)
-    // if(!isExistUser){
-    //     throw new App__error(httpStatus.NOT_FOUND,'User not found. Please provide a valid user ID.')
-    // }
+
+const updateBlogService = async (payload:Partial<Tblog>,id:string)=>{
     const result = await Blog.findByIdAndUpdate(id,payload,{new:true})
-    return result
+    console.log(result)
+    return  result
 }
 
 const deleteBlogService = async (id: string,) => {
@@ -46,5 +45,5 @@ export const blogService = {
     createBlogService,
     getAllBlogService,
     updateBlogService,
-    deleteBlogService
+    deleteBlogService,
 }

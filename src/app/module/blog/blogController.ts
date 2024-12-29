@@ -5,7 +5,9 @@ import { blogService } from "./blogService";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const createBlogController = CatchAsync(async (req, res, next) => {
-    const result = await blogService.createBlogService(req.body)
+    const user = req.user
+    console.log(user)
+    const result = await blogService.createBlogService(req.body,req.user.id)
     sendResponce(res, {
         statusCode: httpStatus.CREATED,
         success: true,
@@ -23,11 +25,11 @@ const getAllBlogController = CatchAsync(async (req, res, next) => {
         data: result
     })
 })
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const updateBlogController = CatchAsync(async (req, res, next) => {
-    const id = req.params.id
     const payload = req.body
-    const result = await blogService.updateBlogService(id, payload)
+    const result = await blogService.updateBlogService(payload,req?.params.id)
     sendResponce(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -52,5 +54,5 @@ export const blogController = {
     createBlogController,
     getAllBlogController,
     updateBlogController,
-    deleteBlogController
+    deleteBlogController,
 }

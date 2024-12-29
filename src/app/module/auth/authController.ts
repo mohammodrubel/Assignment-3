@@ -17,7 +17,9 @@ const loginController = CatchAsync(async(req,res,next)=>{
         statusCode:httpStatus.OK,
         success:true,
        "message": "Login successful",
-        data:accessToken
+        data:{
+            token:accessToken
+        }
     })
 })
 
