@@ -18,27 +18,25 @@ const App__Error_1 = __importDefault(require("../../Error/App__Error"));
 const userModel_1 = require("../user/userModel");
 const blogModel_1 = require("./blogModel");
 const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
-const createBlogService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistUser = yield userModel_1.User.findById(payload.author);
+const createBlogService = (payload, authorId) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("authorId", authorId);
+    const isExistUser = yield userModel_1.User.findById(authorId);
     if (!isExistUser) {
         throw new App__Error_1.default(http_status_1.default.NOT_FOUND, 'User not found. Please provide a valid user ID.');
     }
-    const result = yield blogModel_1.Blog.create(payload);
+    const result = yield blogModel_1.Blog.create(Object.assign(Object.assign({}, payload), { author: authorId }));
     return result;
 });
 const getAllBlogService = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const allBlogs = new QueryBuilder_1.default(blogModel_1.Blog.find().populate({
-        path: 'author', select: '-password -isBlocked'
+        path: 'author', select: '-password -isBlocked -role'
     }), query).search(['title', 'content']).filter().sort().paginate().fields();
     const result = yield allBlogs.modelQuery;
     return result;
 });
-const updateBlogService = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    // const isExistUser = await User.findById(payload.author)
-    // if(!isExistUser){
-    //     throw new App__error(httpStatus.NOT_FOUND,'User not found. Please provide a valid user ID.')
-    // }
+const updateBlogService = (payload, id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield blogModel_1.Blog.findByIdAndUpdate(id, payload, { new: true });
+    console.log(result);
     return result;
 });
 const deleteBlogService = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -52,5 +50,5 @@ exports.blogService = {
     createBlogService,
     getAllBlogService,
     updateBlogService,
-    deleteBlogService
+    deleteBlogService,
 };

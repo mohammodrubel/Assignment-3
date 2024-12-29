@@ -7,7 +7,7 @@ import { blogService } from "./blogService";
 const createBlogController = CatchAsync(async (req, res, next) => {
     const user = req.user
     console.log(user)
-    const result = await blogService.createBlogService(req.body,req.user.id)
+    const result = await blogService.createBlogService(req.body,req?.user?.id)
     sendResponce(res, {
         statusCode: httpStatus.CREATED,
         success: true,

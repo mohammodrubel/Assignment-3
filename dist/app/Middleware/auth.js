@@ -12,29 +12,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const CatchAsync_1 = __importDefault(require("../utils/CatchAsync"));
 const http_status_1 = __importDefault(require("http-status"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config"));
+const userModel_1 = require("../module/user/userModel");
 const App__Error_1 = __importDefault(require("../Error/App__Error"));
-const CatchAsync_1 = __importDefault(require("../utils/CatchAsync"));
-const auth = (...requiredRole) => {
+const auth = (...requiredRoles) => {
     return (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        const Bearertoken = req.headers.authorization;
-        if (!Bearertoken) {
-            throw new App__Error_1.default(http_status_1.default.UNAUTHORIZED, 'you are not unAuthorized');
+        const token = req.headers.authorization;
+        if (!token) {
+            throw new App__Error_1.default(http_status_1.default.UNAUTHORIZED, "You are not authorized!");
         }
-        const token = Bearertoken.split(' ')[1];
-        jsonwebtoken_1.default.verify(token, config_1.default.jwt__access__token__secret, function (err, decoded) {
-            if (err) {
-                throw new App__Error_1.default(http_status_1.default.UNAUTHORIZED, 'you are not authorized');
-            }
-            const decodedValue = decoded === null || decoded === void 0 ? void 0 : decoded.role;
-            if (requiredRole && !requiredRole.includes(decodedValue)) {
-                throw new App__Error_1.default(http_status_1.default.UNAUTHORIZED, 'you are not unAuthorized');
-            }
-            req.user = decoded;
-            next();
-        });
+        const Bearertokens = token.split(' ')[1];
+        console.log(Bearertokens);
+        const decoded = jsonwebtoken_1.default.verify(Bearertokens, config_1.default.jwt__access__token__secret);
+        console.log(decoded);
+        const { role, id } = decoded;
+        // Check if user exists
+        const user = yield userModel_1.User.findById(id);
+        if (!user) {
+            throw new App__Error_1.default(http_status_1.default.NOT_FOUND, 'User not found.');
+        }
+        if (requiredRoles && !requiredRoles.includes(role)) {
+            throw new App__Error_1.default(http_status_1.default.UNAUTHORIZED, 'you are not authorized!');
+        }
+        req.user = decoded;
+        next();
     }));
 };
 exports.default = auth;

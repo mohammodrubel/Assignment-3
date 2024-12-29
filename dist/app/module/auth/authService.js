@@ -23,7 +23,7 @@ const loginService = (payload) => __awaiter(void 0, void 0, void 0, function* ()
     const user = yield userModel_1.User.findOne({ email: payload.email });
     // Check if the user exists
     if (!user) {
-        throw new App__Error_1.default(http_status_1.default.UNAUTHORIZED, 'not found.');
+        throw new App__Error_1.default(http_status_1.default.NOT_FOUND, 'not found.');
     }
     // Check if the user account is blocked
     if (user.isBlocked === true) {
